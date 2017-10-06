@@ -1,4 +1,4 @@
-FROM nvidia/cuda:8.0-runtime-ubuntu16.04
+FROM nvidia/cuda:8.0-runtime-ubuntu16.04 as buildimage
 LABEL maintainer "Unsalted"
 
 ARG DEBIAN_FRONTEND=noninteractive
@@ -71,7 +71,10 @@ RUN chmod +x nheqminer/cpu_xenoncat/asm_linux/* \
   && cp ./nheqminer /usr/local/bin/nheqminer \
   && chmod +x /usr/local/bin/nheqminer
 
-RUN rm -rf /tmp/*
+FROM ubuntu:16.04
+# Totally non-kosher:
+COPY --from=buildimage /usr/local/cuda/lib64/stubs/libcuda.so /usr/lib/x86_64-linux-gnu/libcuda.so.1
+COPY --from=buildimage /usr/local/bin/nheqminer /usr/local/bin
 RUN useradd -ms /bin/bash nheqminer
 USER nheqminer
 
