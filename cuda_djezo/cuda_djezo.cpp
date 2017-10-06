@@ -24,23 +24,17 @@ cuda_djezo::cuda_djezo(int platf_id, int dev_id)
 		major = atoi(m_version.substr(0, n).c_str());
 		minor = atoi(m_version.substr(n + 1, m_version.length() - n - 1).c_str());
 
-		if (major < 5)
-		{
-			throw std::runtime_error("Only CUDA devices with SM 5.0 and higher are supported.");
-		}
-		else if (major == 5 && minor == 0)
+		if (major >= 5)
 		{
 			combo_mode = 2;
 		}
 	}
-	else
-		throw std::runtime_error("Uknown Compute/SM version.");
 }
 
 
 std::string cuda_djezo::getdevinfo()
 {
-	return m_gpu_name + " (#" + std::to_string(device_id) + ") M=" + std::to_string(combo_mode);
+	return m_gpu_name + " (#" + std::to_string(device_id) + ") M=" + std::to_string(combo_mode) + " V=" + m_version;
 }
 
 
